@@ -1,20 +1,31 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
-app.use(express.json());
+
+//configuraciones a servidor http
+app.use(bodyParser.json());
 app.use(cors());
-
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Servidor funcionando SIN MongoDB' });
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 });
 
-app.post('/api/auth/login', (req, res) => {
-  // Respuesta temporal para login
-  res.json({ message: 'Login endpoint - MongoDB no disponible' });
-});
+// Rutas para auth
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
+
+// Rutas para paciente
+const pacienteRoutes = require('./routes/paciente');
+app.use('/api/pacientes', pacienteRoutes); 
+
+// Rutas para citas
+const citaRoutes = require('./routes/cita');
+app.use('/api/citas', citaRoutes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
-  console.log(`Servidor en puerto ${port} (sin MongoDB)`);
+    console.log(`Servidor ejecutándose en el puerto ${port}`);
 });
