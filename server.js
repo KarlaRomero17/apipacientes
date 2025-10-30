@@ -26,6 +26,7 @@ const citaRoutes = require('./routes/cita');
 app.use('/api/citas', citaRoutes);
 
 const port = process.env.PORT || 5000;
+const uri = process.env.MONGODB_URI 
 app.listen(port, () => {
-  console.log(`🚀 Servidor ejecutándose en el puerto ${port}`);
+  console.log(`🚀 Servidor ejecutándose en el puerto ${port} y uri ${uri}`);
 });
