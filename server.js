@@ -2,30 +2,30 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 
-//configuraciones a servidor http
+// Configuración del servidor HTTP
 app.use(bodyParser.json());
 app.use(cors());
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
 
-// Rutas para auth
+// Conexión a MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ Conectado a MongoDB'))
+  .catch(err => console.error('❌ Error al conectar a MongoDB:', err));
+
+// Rutas
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
-// Rutas para paciente
 const pacienteRoutes = require('./routes/paciente');
-app.use('/api/pacientes', pacienteRoutes); 
+app.use('/api/pacientes', pacienteRoutes);
 
-// Rutas para citas
 const citaRoutes = require('./routes/cita');
 app.use('/api/citas', citaRoutes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
-    console.log(`Servidor ejecutándose en el puerto ${port}`);
+  console.log(`🚀 Servidor ejecutándose en el puerto ${port}`);
 });
